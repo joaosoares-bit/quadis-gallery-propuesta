@@ -1051,3 +1051,14 @@ dialog.luz::backdrop{background:#000}
   .leitura small,.casa .placa h4 small,.c2 small{font-size:.75rem}
 }
 .numeros dd small{font-size:max(12px,.36em)}
+/* «Reduzir movimento» do sistema: a experiência fica inteira (decisão do João, 16/10/2026); só sai o que pisca e o que treme,
+   que é o que faz mal a quem liga a opção: o clarão, o ecrã a tremer, as lâminas e o néon a tremeluzir. */
+@media (prefers-reduced-motion: reduce){
+  .hero-logo::before{display:none}
+  .js .hero.logo-a-frente .hero-logo svg{animation:none}
+  .js .hero.logo-a-frente .hero-logo .lamina{animation-name:lamina-calma}
+  .js .hero.logo-a-frente .hero-logo .gl{animation-name:calma-gl}
+  .hud-topo .rec{animation:none}
+}
+@keyframes lamina-calma{0%{opacity:0;transform:scaleX(90) scaleY(.1)}20%{opacity:1;transform:scaleX(90) scaleY(.42)}100%{opacity:0;transform:scaleX(1) scaleY(1)}}
+@keyframes calma-gl{from{opacity:0}to{opacity:1;filter:none;transform:none}}
