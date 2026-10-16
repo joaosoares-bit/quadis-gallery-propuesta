@@ -386,6 +386,19 @@
     document.addEventListener('qg:mov', () => { if (reduzido()) liga(false); });
   });
 
+  /* ── Taller: o visor de diagnóstico corre as cenas (4,6 s cada) enquanto a secção está à vista; a lista vai ficando marcada.
+        Lista: 0 Diagnosis (logo na primeira cena), 1 Motor (cenas 0 e 1), 2 Frenos (cena 2), 3 Cita previa (no fim da volta). ── */
+  $$('[data-taller]').forEach((sec) => {
+    const n = $$('.cena', sec).length, itens = $$('.checklist li', sec), DUR = 4600; let k = -1, t = 0, vis = false;
+    const marca = (i) => itens[i] && itens[i].classList.add('ok');
+    const cena = () => { k = (k + 1) % n; if (k === 0) itens.forEach((li) => li.classList.remove('ok'));
+      sec.classList.remove('anda'); sec.dataset.cena = k; void sec.offsetWidth; sec.classList.add('anda');
+      setTimeout(() => { marca(0); if (k <= 1) marca(1); if (k === 2) { marca(2); setTimeout(() => marca(3), 1400); } }, 1600);
+      t = setTimeout(() => { if (vis && !reduzido()) cena(); }, DUR); };
+    sec.style.setProperty('--dur', DUR + 'ms'); sec.dataset.cena = 0;
+    new IntersectionObserver(([en]) => { const antes = vis; vis = en.isIntersecting; if (vis && !antes) { clearTimeout(t); if (reduzido()) { sec.dataset.cena = 0; sec.classList.add('anda'); itens.forEach((li) => li.classList.add('ok')); } else cena(); } else if (!vis) clearTimeout(t); }, { threshold: 0.3 }).observe(sec);
+  });
+
   /* ── Faixa com fotografia: a imagem desliza devagar em relação à moldura, ao ritmo do scroll ── */
   $$('[data-paralaxe]').forEach((sec) => {
     let pedido = false;

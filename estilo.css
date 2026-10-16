@@ -992,3 +992,52 @@ dialog.luz::backdrop{background:#000}
   .sala2 .cidade{font-size:clamp(2.6rem,13vw,3.4rem)}
   .m-logo{height:26px;max-width:92px}
 }
+/* ── Taller oficial: um visor de diagnóstico por cima de fotografias reais da mecânica dos coches em sala.
+      Em cada cena: a fotografia aproxima-se, os cantos do visor fecham sobre a peça, uma linha de scan desce,
+      os pontos acendem com o nome da peça, a leitura muda e a barra enche. A lista ao lado vai ficando marcada. ── */
+.taller2{position:relative;background:var(--fundo);padding-block:var(--bloco);overflow:hidden}
+.taller2-grelha{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);gap:clamp(28px,5vw,90px);align-items:center}
+.visor{position:relative;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;background:#000;isolation:isolate}
+.visor .cena{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 900ms var(--curva)}
+.visor .cena img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 4600ms linear;filter:saturate(.9) contrast(1.05)}
+.visor::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55)),repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
+.taller2[data-cena="0"] .cena[data-k="0"],.taller2[data-cena="1"] .cena[data-k="1"],.taller2[data-cena="2"] .cena[data-k="2"]{opacity:1}
+.taller2[data-cena="0"] .cena[data-k="0"] img,.taller2[data-cena="1"] .cena[data-k="1"] img,.taller2[data-cena="2"] .cena[data-k="2"] img{transform:scale(1)}
+.visor .scan{position:absolute;left:0;right:0;top:0;height:22%;z-index:2;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,164,1,.18) 70%,rgba(255,196,90,.85) 99%,transparent);transform:translateY(-110%);opacity:0}
+.taller2.anda .visor .scan{animation:scan 1800ms cubic-bezier(.5,0,.5,1) 200ms both}
+@keyframes scan{0%{transform:translateY(-110%);opacity:1}90%{opacity:1}100%{transform:translateY(470%);opacity:0}}
+.canto{position:absolute;z-index:3;width:42px;height:42px;border:2px solid var(--acento);transition:inset 900ms var(--curva),opacity var(--t2)}
+.canto.c1{top:4%;left:4%;border-right:0;border-bottom:0}.canto.c2{top:4%;right:4%;border-left:0;border-bottom:0}
+.canto.c3{bottom:4%;left:4%;border-right:0;border-top:0}.canto.c4{bottom:4%;right:4%;border-left:0;border-top:0}
+.taller2:not(.anda) .canto.c1{top:-2%;left:-2%}.taller2:not(.anda) .canto.c2{top:-2%;right:-2%}.taller2:not(.anda) .canto.c3{bottom:-2%;left:-2%}.taller2:not(.anda) .canto.c4{bottom:-2%;right:-2%}
+.ponto-t{position:absolute;left:var(--x);top:var(--y);z-index:3;width:0;height:0}
+.ponto-t i{position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--acento);box-shadow:0 0 0 0 rgba(255,164,1,.7);opacity:0;transform:scale(0);transition:opacity var(--t2),transform var(--t2) cubic-bezier(.3,1.6,.5,1)}
+.ponto-t b{position:absolute;top:-13px;white-space:nowrap;font-size:var(--f-mi);letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#0a0a0b;background:#f2f1ee;padding:5px 9px;border-radius:2px;opacity:0;transition:opacity var(--t2),transform var(--t2) var(--curva)}
+.ponto-t b.dir{left:16px;transform:translateX(-8px)}.ponto-t b.esq{right:16px;transform:translateX(8px)}
+.ponto-t b::before{content:"";position:absolute;top:50%;width:10px;height:1px;background:#f2f1ee}
+.ponto-t b.dir::before{right:100%}.ponto-t b.esq::before{left:100%}
+.taller2.anda[data-cena="0"] .ponto-t[data-k="0"] i,.taller2.anda[data-cena="1"] .ponto-t[data-k="1"] i,.taller2.anda[data-cena="2"] .ponto-t[data-k="2"] i{opacity:1;transform:scale(1);animation:alvo 1.6s ease-out infinite;transition-delay:calc(1100ms + var(--i)*350ms)}
+.taller2.anda[data-cena="0"] .ponto-t[data-k="0"] b,.taller2.anda[data-cena="1"] .ponto-t[data-k="1"] b,.taller2.anda[data-cena="2"] .ponto-t[data-k="2"] b{opacity:1;transform:none;transition-delay:calc(1250ms + var(--i)*350ms)}
+@keyframes alvo{0%{box-shadow:0 0 0 0 rgba(255,164,1,.7)}100%{box-shadow:0 0 0 16px rgba(255,164,1,0)}}
+.hud-topo{position:absolute;top:5.5%;left:8%;z-index:3;display:flex;align-items:center;gap:8px;font-size:var(--f-mi);letter-spacing:.18em;font-weight:700;color:rgba(242,241,238,.85)}
+.hud-topo .rec{width:8px;height:8px;border-radius:50%;background:var(--acento);animation:rec 1.2s steps(2) infinite}
+@keyframes rec{50%{opacity:.15}}
+.hud-base{position:absolute;left:8%;right:8%;bottom:6%;z-index:3}
+.leitura{position:absolute;left:0;bottom:16px;font-family:var(--serif);font-weight:600;font-size:var(--f-s);letter-spacing:-.02em;color:#f2f1ee;opacity:0;transform:translateY(10px);transition:opacity var(--t2),transform var(--t2) var(--curva)}
+.leitura small{display:block;font-family:var(--sans);font-size:var(--f-mi);letter-spacing:.18em;text-transform:uppercase;color:var(--acento);margin-bottom:4px}
+.taller2[data-cena="0"] .leitura[data-k="0"],.taller2[data-cena="1"] .leitura[data-k="1"],.taller2[data-cena="2"] .leitura[data-k="2"]{opacity:1;transform:none;transition-delay:400ms}
+.hud-barra{height:2px;background:rgba(242,241,238,.25)}
+.hud-barra i{display:block;height:100%;background:var(--acento);transform-origin:left;transform:scaleX(0)}
+.taller2.anda .hud-barra i{animation:barra-t var(--dur,4600ms) linear both}
+@keyframes barra-t{to{transform:scaleX(1)}}
+.taller2-txt .lead{margin-top:20px}
+.checklist{margin-top:26px;border-top:1px solid var(--linha)}
+.checklist li{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--linha);font-weight:600;font-size:var(--f-lead);color:var(--texto-2);transition:color var(--t2)}
+.checklist .tick{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--linha-forte);display:grid;place-items:center;transition:background var(--t2),border-color var(--t2)}
+.checklist svg{width:16px;height:16px;fill:none;stroke:#0a0a0b;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 500ms var(--curva) 150ms}
+.checklist li.ok{color:var(--texto)}
+.checklist li.ok .tick{background:var(--acento);border-color:var(--acento)}
+.checklist li.ok svg{stroke-dashoffset:0}
+.taller2-txt .accoes{margin-top:28px}
+@media (max-width:900px){.taller2-grelha{grid-template-columns:1fr}}
+@media (max-width:760px){.visor{overflow:visible;margin-bottom:70px}.visor .cena{border-radius:var(--r);overflow:hidden}.visor::after{border-radius:var(--r)}.hud-base{left:0;right:0;bottom:-66px}.leitura{bottom:12px}.canto{width:26px;height:26px}.hud-topo{font-size:.58rem}.ponto-t b{font-size:.58rem;padding:4px 7px}.leitura{font-size:1.1rem}}
