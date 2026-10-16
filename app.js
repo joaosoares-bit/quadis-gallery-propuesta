@@ -85,7 +85,7 @@
     const heroEl = v.closest('.hero'); let tocou = false, desistiu = false;
     const vez = () => { tocou = tocou || v.currentTime > 0.05;
       const noLogo = v.currentTime < 4.3 || (v.duration && v.currentTime > v.duration - 0.6);
-      heroEl.classList.toggle('logo-a-frente', !reduzido() && !guardado() && (tocou ? (!v.paused && noLogo) : !desistiu)); };
+      heroEl.classList.toggle('logo-a-frente', !guardado() && (tocou ? (!v.paused && noLogo) : !desistiu)); };   // com «Reduzir movimento» do sistema corre a versão calma (CSS); só o interruptor do rodapé a tira
     setTimeout(() => { desistiu = true; vez(); }, 3500); vez(); document.addEventListener('qg:mov', vez);
     v.addEventListener('timeupdate', vez); v.addEventListener('pause', vez); v.addEventListener('playing', vez);
     ['loadeddata', 'canplay', 'pause', 'stalled'].forEach((ev) => v.addEventListener(ev, () => { if (v.paused) setTimeout(toca, 150); }));
@@ -196,6 +196,16 @@
       if (!pedido) pedido = requestAnimationFrame(() => { pedido = 0; if (reduzido()) return; el.style.setProperty('--mx', x.toFixed(3)); el.style.setProperty('--my', y.toFixed(3)); }); }, { passive: true });
     el.addEventListener('pointerleave', () => { el.style.setProperty('--mx', 0); el.style.setProperty('--my', 0); });
   });
+
+  /* ── No toque, as imagens vivas mexem-se com a posição no ecrã (vertical) e na pista da sala (horizontal) ── */
+  if (!matchMedia('(hover: hover)').matches) {
+    const vivos = $$('.obra, .cartao'); let pedido = false;
+    const mede = () => { pedido = false; if (reduzido()) return; vivos.forEach((el) => { const r = el.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50 || r.right < -50 || r.left > innerWidth + 50) return;
+      el.style.setProperty('--my', Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / (innerHeight / 2))).toFixed(3));
+      el.style.setProperty('--mx', Math.max(-1, Math.min(1, (r.left + r.width / 2 - innerWidth / 2) / (innerWidth / 2))).toFixed(3)); }); };
+    const ao = () => { if (!pedido) { pedido = true; requestAnimationFrame(mede); } };
+    addEventListener('scroll', ao, { passive: true }); $$('.sala-pista').forEach((p) => p.addEventListener('scroll', ao, { passive: true })); mede();
+  }
 
   /* ── Mapa: só carrega quando pedem (privacidade e peso) ── */
   $$('.mapa button').forEach((b) => b.addEventListener('click', () => {
@@ -328,6 +338,18 @@
   }
 
   /* ── Ofícios: a fotografia de cada serviço segue o rato, com um ligeiro balanço na direcção do movimento ── */
+  /* no toque: a marca mais perto do centro do ecrã fica activa e a fotografia dela desliza até à linha, com o mesmo balanço */
+  if (!matchMedia('(hover: hover)').matches) $$('[data-oficios]').forEach((lista) => {
+    const im = $('.oficios-img', lista), linhas2 = $$('.oficio', lista); let y = 0, ay = 0, vx = 0, raf = 0, ia = false;
+    const anda = () => { raf = 0; const d = y - ay; ay += d * 0.14; vx += (d * 0.04 - vx) * 0.25;
+      im.style.setProperty('--y', ay.toFixed(1)); im.style.setProperty('--vx', Math.max(-6, Math.min(6, vx)).toFixed(2));
+      if (Math.abs(d) > 0.4 || Math.abs(vx) > 0.05) raf = requestAnimationFrame(anda); };
+    const mede = () => { const r = lista.getBoundingClientRect(); if (reduzido() || r.bottom < 0 || r.top > innerHeight) { delete lista.dataset.activo; return; }
+      let melhor = null, dist = 1e9; linhas2.forEach((a) => { const b = a.getBoundingClientRect(), c = Math.abs(b.top + b.height / 2 - innerHeight * 0.52); if (c < dist) { dist = c; melhor = a; } });
+      if (!melhor) return; lista.dataset.activo = melhor.dataset.k; y = melhor.offsetTop + melhor.offsetHeight / 2;
+      if (!ia) { ay = y; ia = true; } if (!raf) raf = requestAnimationFrame(anda); };
+    addEventListener('scroll', () => requestAnimationFrame(mede), { passive: true }); addEventListener('resize', mede); mede();
+  });
   $$('[data-oficios]').forEach((lista) => {
     if (!matchMedia('(hover: hover)').matches) return;
     const im = $('.oficios-img', lista); let x = 0, y = 0, ax = 0, ay = 0, vx = 0, raf = 0;
@@ -352,6 +374,8 @@
     });
     new IntersectionObserver((es) => es.forEach((en) => { if (!en.isIntersecting) para(en.target); }), { threshold: 0.2 }).observe($('.reels-pista'));
     const ioR = new IntersectionObserver((es) => es.forEach((en) => { if (!en.isIntersecting) para(en.target); }), { threshold: 0.35 }); reels.forEach((r) => ioR.observe(r));
+    /* no toque não há rato: toca sozinho o reel que fica bem à vista (um de cada vez), como o rato faz no computador */
+    if (!fino) { const ioT = new IntersectionObserver((es) => es.forEach((en) => { if (en.intersectionRatio >= 0.8 && !reduzido()) toca(en.target); }), { threshold: [0.8] }); reels.forEach((r) => ioT.observe(r)); }
   }
 
   /* ── Barcelona e Valência: os três vídeos tocam sozinhos (sem som) enquanto a secção está à vista; com movimento reduzido ficam na capa ── */

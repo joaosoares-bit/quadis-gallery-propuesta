@@ -613,7 +613,7 @@ dialog.luz::backdrop{background:#000}
 @keyframes cauda{0%{opacity:0;transform:translate(-120px,-120px) scale(1.4);filter:brightness(2.4) drop-shadow(0 0 16px rgba(255,190,80,1))}60%{opacity:1}100%{opacity:1;transform:none;filter:none}}
 @keyframes bate{0%{opacity:0;transform:translateX(90px) skewX(-18deg) scaleX(1.5);filter:blur(10px) brightness(2.2)}55%{opacity:1;filter:blur(0) brightness(1.6)}100%{opacity:1;transform:none;filter:none}}
 @keyframes neon{0%{opacity:0;filter:brightness(2.6)}10%{opacity:.9}18%{opacity:.1}28%{opacity:1}36%{opacity:.25}48%{opacity:1;filter:brightness(1.7) drop-shadow(0 0 12px rgba(242,241,238,.7))}100%{opacity:1;filter:none}}
-[data-mov=reduzido] .hero-logo{display:none}
+
 
 /* ── A sala: as viaturas em destaque como obras numa galeria, com placa de museu ── */
 .sala{background:var(--fundo-2);padding-block:var(--bloco);overflow:hidden}
@@ -689,8 +689,8 @@ dialog.luz::backdrop{background:#000}
 .oficios-lista[data-activo] .oficios-img{opacity:1}
 .oficios-img span{position:absolute;inset:0;opacity:0;transition:opacity var(--t2) var(--curva)}
 .oficios-img img{width:100%;height:100%;object-fit:cover}
-.oficios-lista[data-activo="0"] .oficios-img span[data-k="0"],.oficios-lista[data-activo="1"] .oficios-img span[data-k="1"],.oficios-lista[data-activo="2"] .oficios-img span[data-k="2"],.oficios-lista[data-activo="3"] .oficios-img span[data-k="3"]{opacity:1}
-@media (hover:none),(max-width:760px){.oficios-img{display:none}.oficio .mini{display:block}}
+.oficios-lista[data-activo="0"] .oficios-img span[data-k="0"],.oficios-lista[data-activo="1"] .oficios-img span[data-k="1"],.oficios-lista[data-activo="2"] .oficios-img span[data-k="2"],.oficios-lista[data-activo="3"] .oficios-img span[data-k="3"],.oficios-lista[data-activo="4"] .oficios-img span[data-k="4"]{opacity:1}
+
 
 /* ── Reels: os vídeos verdadeiros do Instagram, em formato de telemóvel ── */
 .reels{background:var(--fundo-2);overflow:hidden}
@@ -858,3 +858,34 @@ dialog.luz::backdrop{background:#000}
   .sala-v span{left:8px;right:8px;bottom:8px;font-size:.68rem}
   .sala-v span small{display:none}
 }
+/* ── Telemóvel = a mesma experiência do computador (pedido do João, 16/10/2026). O que no computador vem do rato,
+      no toque vem do scroll: a marca no centro do ecrã acende-se e a fotografia dela desliza ao lado, com o mesmo balanço;
+      as imagens da sala e dos cartões mexem-se com a posição no ecrã; os reels tocam sozinhos quando ficam à vista. ── */
+@media (hover:none){
+  .oficio .mini{display:none}
+  .oficios-img{left:auto;right:0;width:40vw;transform:translate3d(0,calc(var(--y,0)*1px - 50%),0) rotate(calc(var(--vx,0)*1deg)) scale(.92)}
+  .oficios-lista[data-activo] .oficio{opacity:.34}
+  .oficios-lista[data-activo="0"] .oficio[data-k="0"],.oficios-lista[data-activo="1"] .oficio[data-k="1"],.oficios-lista[data-activo="2"] .oficio[data-k="2"],.oficios-lista[data-activo="3"] .oficio[data-k="3"],.oficios-lista[data-activo="4"] .oficio[data-k="4"]{opacity:1;padding-left:12px;color:var(--acento-2)}
+  .oficio{padding-right:42vw}
+  .obra img{transform:scale(1.08) translate3d(calc(var(--mx,0)*-16px),calc(var(--my,0)*-12px),0)}
+  .cartao img{transform:scale(1.05) translate3d(0,calc(var(--my,0)*-10px),0)}
+  .reel.a-tocar{transform:translateY(-8px)}
+}
+/* A sala (o inventário da página de entrada) com o fundo do estúdio das fotografias (#d2d6df, medido na parede de sete fotos):
+   os coches deixam de parecer recortados em caixas claras sobre o negro (pedido do João, 16/10/2026) */
+.sala{background:#d2d6df;color:var(--tinta);--texto:var(--tinta);--texto-2:#454a52;--linha:rgba(17,19,23,.16);--linha-forte:rgba(17,19,23,.4);--acento-2:#6e4200}
+.sala .t-l em{color:#6e4200}
+.sala .obra figure{background:#d2d6df}
+.sala .obra figure::after{border-color:transparent}
+.sala .botao.cheio{color:#0a0a0b}
+.sala-nav button:hover{border-color:var(--tinta)}
+/* Com «Reduzir movimento» do sistema, a entrada do logótipo corre na mesma, numa versão calma: as peças aparecem por
+   ordem, sem lâminas a piscar, sem clarão e sem o ecrã a tremer. Só o interruptor do rodapé a desliga de todo. */
+[data-mov=reduzido] .hero-logo{display:grid}
+[data-mov=reduzido] .hero-logo .lamina,[data-mov=reduzido] .hero-logo .onda,[data-mov=reduzido] .hero-logo .aro,[data-mov=reduzido] .hero-logo::before{display:none}
+[data-mov=reduzido] .hero.logo-a-frente .hero-logo svg{animation:none!important}
+[data-mov=reduzido] .hero.logo-a-frente .hero-logo .q-anel{animation:calma 700ms ease 200ms both!important}
+[data-mov=reduzido] .hero.logo-a-frente .hero-logo .q-cauda{animation:calma 600ms ease 700ms both!important}
+[data-mov=reduzido] .hero.logo-a-frente .hero-logo .lt{animation:calma 600ms ease calc(1000ms + var(--k)*90ms) both!important}
+[data-mov=reduzido] .hero.logo-a-frente .hero-logo .gl{animation:calma 600ms ease calc(1500ms + var(--k)*70ms) both!important}
+@keyframes calma{from{opacity:0}to{opacity:1;transform:none;filter:none}}
