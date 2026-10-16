@@ -50,7 +50,7 @@
 
   /* ── Revelações: títulos por linha, blocos, imagens ── */
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visto'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-  $$('[data-rev],[data-linhas],[data-img],.duarte,.importa').forEach((el) => io.observe(el));
+  $$('[data-rev],[data-linhas],[data-img],.duarte,.importa,.visita2').forEach((el) => io.observe(el));
 
   /* ── Números que contam (ano, km, cv) — o valor final já está no HTML ── */
   const fmt = { format: (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') };

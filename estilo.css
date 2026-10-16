@@ -919,3 +919,76 @@ dialog.luz::backdrop{background:#000}
   .casa .placa{grid-template-columns:auto 1fr}.casa .placa b{grid-column:2;grid-row:3}
 }
 [data-mov=reduzido] .hero-logo{display:none}
+/* ── A visita: mapa ilustrado que se desenha, salas a pulsar, a cauda do Q a viajar entre as duas cidades,
+      cidades em contorno que se enchem de tinta, logótipos das marcas a entrar, e ícones vivos ── */
+.visita2-cab{display:grid;grid-template-columns:1fr minmax(0,440px);gap:20px 48px;align-items:end;margin-bottom:clamp(28px,4vw,56px)}
+.visita2-grelha{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,72px);align-items:center}
+.mapa-ilu{margin:0;position:relative;aspect-ratio:520/620;max-height:78svh}
+.mapa-ilu svg{width:100%;height:100%;overflow:visible}
+.mapa-ilu .terra{fill:url(#pontos);color:#111317}
+.mapa-ilu pattern circle{fill:rgba(17,19,23,.2)}
+.mapa-ilu .costa{fill:none;stroke:#111317;stroke-width:1.6;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2400ms var(--curva) 200ms}
+.mapa-ilu .onda{fill:none;stroke:rgba(17,19,23,.28);stroke-width:1.2;stroke-linecap:round;animation:onda-mar 5s ease-in-out calc(var(--k)*-.8s) infinite alternate}
+@keyframes onda-mar{from{transform:translateX(-10px)}to{transform:translateX(12px)}}
+.mapa-ilu .mar{font-family:var(--serif);font-style:italic;font-size:15px;fill:rgba(17,19,23,.45);letter-spacing:.06em}
+.mapa-ilu .rota{fill:none;stroke:var(--acento);stroke-width:3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1800ms var(--curva) 1700ms}
+.mapa-ilu .rota-trilho{fill:none;stroke:rgba(255,255,255,.85);stroke-width:1.2;stroke-dasharray:2 7;animation:trilho 1.4s linear infinite}
+@keyframes trilho{to{stroke-dashoffset:-18}}
+.mapa-ilu .pino .ponto{fill:#111317;stroke:var(--acento);stroke-width:3}
+.mapa-ilu .pino .pulso{fill:none;stroke:var(--acento);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:pulso 2.4s ease-out calc(var(--k)*1.2s) infinite}
+.mapa-ilu .pino .p2{animation-delay:calc(var(--k)*1.2s + 1.2s)}
+@keyframes pulso{0%{transform:scale(1);opacity:.9}100%{transform:scale(4.2);opacity:0}}
+.mapa-ilu .pino text{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:-.02em;fill:#111317}
+.mapa-ilu .pino{opacity:0;transition:opacity var(--t2) var(--curva);transition-delay:calc(1500ms + var(--k)*1700ms)}
+.mapa-ilu .viajante{fill:var(--acento);opacity:0;transition:opacity var(--t2) 3400ms}
+.visita2.visto .mapa-ilu .costa,.visita2.visto .mapa-ilu .rota{stroke-dashoffset:0}
+.visita2.visto .mapa-ilu .pino,.visita2.visto .mapa-ilu .viajante{opacity:1}
+.salas2{display:grid;gap:clamp(14px,2vw,22px)}
+.sala2{position:relative;padding:clamp(22px,2.6vw,36px);border:1px solid var(--linha);border-radius:var(--r);background:rgba(255,255,255,.55);overflow:hidden;isolation:isolate;transition:transform var(--t3) var(--curva),box-shadow var(--t3) var(--curva)}
+.sala2::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 30%,rgba(255,164,1,.14) 50%,transparent 70%);transform:translateX(-120%);transition:transform 1400ms var(--curva)}
+.sala2:hover{transform:translateY(-4px);box-shadow:0 24px 40px -24px rgba(17,19,23,.35)}
+.sala2:hover::before{transform:translateX(120%)}
+.sala2 .n{position:absolute;right:clamp(18px,2vw,30px);top:clamp(18px,2vw,28px);font-size:var(--f-mi);letter-spacing:.2em;color:#6e4200}
+.sala2 .cidade{font-family:var(--serif);font-weight:800;letter-spacing:-.045em;font-size:var(--f-l);line-height:1;color:transparent;-webkit-text-stroke:1.5px #111317;background:linear-gradient(90deg,#111317 50%,transparent 50%) 100% 0/200% 100% no-repeat;-webkit-background-clip:text;background-clip:text;transition:background-position 1500ms var(--curva);transition-delay:calc(500ms + var(--k)*350ms)}
+.visita2.visto .sala2 .cidade{background-position:0 0}
+.sala2 .morada{margin-top:14px;font-weight:600;font-size:var(--f-lead);line-height:1.4}
+.m-logos{display:flex;flex-wrap:wrap;align-items:center;gap:14px 26px;margin-top:20px;padding-top:18px;border-top:1px solid var(--linha)}
+.m-logo{height:30px;width:auto;max-width:110px;object-fit:contain;opacity:0;transform:translateY(14px) scale(.85);transition:opacity var(--t2) var(--curva),transform var(--t2) var(--curva),filter var(--t2);transition-delay:calc(900ms + var(--k)*110ms)}
+.visita2.visto .m-logo{opacity:1;transform:none}
+.sala2:hover .m-logo{filter:drop-shadow(0 4px 8px rgba(17,19,23,.2))}
+.pino-bt{margin-top:22px}
+.pino-bt svg{width:18px;height:18px;animation:salta 2.2s var(--curva) infinite}
+@keyframes salta{0%,60%,100%{transform:none}70%{transform:translateY(-6px)}80%{transform:translateY(0) scaleY(.85)}88%{transform:translateY(-2px)}}
+.contacto2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:clamp(24px,3vw,44px)}
+.c2{display:flex;align-items:center;gap:16px;padding:18px 20px;border:1px solid var(--linha-forte);border-radius:var(--r);min-height:76px;transition:background var(--t2),color var(--t2),border-color var(--t2),transform var(--t2) var(--curva)}
+.c2 .ico{flex:none;width:44px;height:44px;border-radius:var(--r-pilula);display:grid;place-items:center;background:#111317;color:#f2f1ee;transition:background var(--t2)}
+.c2 .ico svg{width:20px;height:20px}
+.c2 small{display:block;font-size:var(--f-mi);letter-spacing:.16em;text-transform:uppercase;color:var(--texto-2);font-weight:600}
+.c2 b{font-weight:700;font-size:var(--f-lead)}
+.c2.tel{background:var(--acento);border-color:var(--acento);color:#0a0a0b}.c2.tel small{color:rgba(10,10,11,.7)}
+.c2:hover{transform:translateY(-3px)}
+.c2:not(.tel):hover{background:#111317;color:#f2f1ee}.c2:not(.tel):hover small{color:rgba(242,241,238,.7)}.c2:not(.tel):hover .ico{background:var(--acento);color:#0a0a0b}
+.c2.tel .ico svg{animation:toca 3s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes toca{0%,70%,100%{transform:none}74%{transform:rotate(-16deg)}78%{transform:rotate(14deg)}82%{transform:rotate(-12deg)}86%{transform:rotate(10deg)}90%{transform:rotate(-4deg)}}
+.c2.cal .ico svg{animation:folha 4s ease-in-out infinite}
+@keyframes folha{0%,75%,100%{transform:none}82%{transform:perspective(60px) rotateX(-40deg)}90%{transform:perspective(60px) rotateX(0)}}
+.c2.carta .aba{transition:d var(--t2)}
+.c2.carta:hover .ico svg{animation:carta 700ms var(--curva)}
+@keyframes carta{50%{transform:translateY(-4px) rotate(-8deg)}}
+.js:not([data-mov=reduzido]) .sala2,.js:not([data-mov=reduzido]) .c2{opacity:0;translate:0 30px;transition:opacity var(--t3) var(--curva),translate var(--t3) var(--curva),transform var(--t3) var(--curva),background var(--t2),color var(--t2),border-color var(--t2),box-shadow var(--t3)}
+.js:not([data-mov=reduzido]) .sala2{transition-delay:calc(300ms + var(--k)*200ms)}
+.js:not([data-mov=reduzido]) .c2:nth-child(2){transition-delay:120ms}.js:not([data-mov=reduzido]) .c2:nth-child(3){transition-delay:240ms}
+.visita2.visto .sala2,.visita2.visto .c2{opacity:1;translate:0 0}
+[data-mov=reduzido] .mapa-ilu .costa,[data-mov=reduzido] .mapa-ilu .rota{stroke-dashoffset:0}
+[data-mov=reduzido] .mapa-ilu .pino,[data-mov=reduzido] .mapa-ilu .viajante,[data-mov=reduzido] .m-logo{opacity:1;transform:none}
+[data-mov=reduzido] .sala2 .cidade{background-position:0 0}
+@media (max-width:900px){
+  .visita2-cab,.visita2-grelha{grid-template-columns:1fr}
+  .mapa-ilu{max-height:none;width:100%;max-width:440px;margin-inline:auto;aspect-ratio:520/620}
+  .contacto2{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .mapa-ilu{aspect-ratio:auto;height:auto}
+  .sala2 .cidade{font-size:clamp(2.6rem,13vw,3.4rem)}
+  .m-logo{height:26px;max-width:92px}
+}
