@@ -483,11 +483,7 @@ dialog.luz::backdrop{background:#000}
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:var(--t2)}
 ::view-transition-group(*){animation-duration:var(--t2);animation-timing-function:var(--curva)}
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0ms!important}
-  @view-transition{navigation:none}
-}
+
 [data-mov=reduzido]{scroll-behavior:auto}
 [data-mov=reduzido] *,[data-mov=reduzido] *::before,[data-mov=reduzido] *::after{animation-duration:.01ms!important;transition-duration:.01ms!important;transition-delay:0ms!important}
 
@@ -879,13 +875,47 @@ dialog.luz::backdrop{background:#000}
 .sala .obra figure::after{border-color:transparent}
 .sala .botao.cheio{color:#0a0a0b}
 .sala-nav button:hover{border-color:var(--tinta)}
-/* Com «Reduzir movimento» do sistema, a entrada do logótipo corre na mesma, numa versão calma: as peças aparecem por
-   ordem, sem lâminas a piscar, sem clarão e sem o ecrã a tremer. Só o interruptor do rodapé a desliga de todo. */
-[data-mov=reduzido] .hero-logo{display:grid}
-[data-mov=reduzido] .hero-logo .lamina,[data-mov=reduzido] .hero-logo .onda,[data-mov=reduzido] .hero-logo .aro,[data-mov=reduzido] .hero-logo::before{display:none}
-[data-mov=reduzido] .hero.logo-a-frente .hero-logo svg{animation:none!important}
-[data-mov=reduzido] .hero.logo-a-frente .hero-logo .q-anel{animation:calma 700ms ease 200ms both!important}
-[data-mov=reduzido] .hero.logo-a-frente .hero-logo .q-cauda{animation:calma 600ms ease 700ms both!important}
-[data-mov=reduzido] .hero.logo-a-frente .hero-logo .lt{animation:calma 600ms ease calc(1000ms + var(--k)*90ms) both!important}
-[data-mov=reduzido] .hero.logo-a-frente .hero-logo .gl{animation:calma 600ms ease calc(1500ms + var(--k)*70ms) both!important}
-@keyframes calma{from{opacity:0}to{opacity:1;transform:none;filter:none}}
+/* ── Hoy en la sala, marca a marca (à maneira do site deles, mas com os anúncios reais): logótipo oficial e nome à esquerda,
+      a fila dos coches dessa marca a deslizar à direita, com setas nos dois sentidos e a barra de progresso.
+      Ao entrar: o logótipo assenta, o nome sobe por linhas, os anúncios chegam da direita um a um. ── */
+.sala{padding-bottom:0}
+.sala-cab{margin-bottom:clamp(20px,3vw,40px)}
+.casa{position:relative;padding-block:clamp(36px,5vw,72px);border-top:1px solid var(--linha)}
+.casa:nth-child(odd of .casa){background:#dadde4}
+.casa-id{display:grid;grid-template-columns:auto 1fr auto;gap:12px clamp(20px,3vw,48px);align-items:center;margin-bottom:clamp(20px,2.6vw,36px)}
+.casa-logo{height:clamp(56px,6vw,96px);width:auto;max-width:clamp(140px,16vw,260px);object-fit:contain}
+.casa-nome h3{font-family:var(--serif);font-weight:600;letter-spacing:-.04em;font-size:var(--f-l);line-height:1}
+.casa-nome p{margin-top:10px;font-size:var(--f-b);letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--texto-2)}
+.casa-nome p b{color:#6e4200;font-weight:700}
+.casa-nav{display:flex;align-items:center;gap:10px}
+.casa-nav button{width:48px;height:48px;border:1px solid var(--linha-forte);border-radius:var(--r-pilula);font-size:1rem;line-height:1;transition:transform var(--t1),border-color var(--t1),background var(--t1),color var(--t1)}
+.casa-nav button:hover{background:var(--tinta);color:#f2f1ee;border-color:var(--tinta)}
+.casa-nav button:active{transform:scale(.92)}
+.casa-nav button:disabled{opacity:.3;pointer-events:none}
+.casa-nav .seta{margin-left:12px}
+.casa-pista{display:flex;gap:clamp(14px,1.8vw,28px);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-inline:max(var(--margem),calc((100vw - var(--max))/2 + var(--margem)));scroll-padding-inline:max(var(--margem),calc((100vw - var(--max))/2 + var(--margem)));padding-bottom:6px}
+.casa-pista::-webkit-scrollbar{display:none}
+.casa .obra.anuncio{width:clamp(260px,26vw,420px)}
+.casa .obra figure{aspect-ratio:4/3;background:transparent}
+.casa .placa h4{font-family:var(--serif);font-weight:600;letter-spacing:-.03em;font-size:var(--f-s);line-height:1.1}
+.casa .placa h4 small{display:block;font-size:var(--f-mi);letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--texto-2);margin-bottom:4px}
+.casa .placa{border-left-color:var(--acento)}
+.casa .sala-barra{margin-top:clamp(18px,2.4vw,32px)}
+/* entrada da marca */
+.js:not([data-mov=reduzido]) .casa .casa-logo{opacity:0;transform:scale(.7) rotate(-6deg);filter:blur(6px);transition:opacity var(--t3) var(--curva),transform var(--t3) var(--curva),filter var(--t3) var(--curva)}
+.js:not([data-mov=reduzido]) .casa.visto .casa-logo{opacity:1;transform:none;filter:none}
+.js:not([data-mov=reduzido]) .casa .anuncio{opacity:0;transform:translateX(90px);transition:opacity var(--t3) var(--curva),transform var(--t3) var(--curva);transition-delay:calc(200ms + var(--i)*90ms)}
+.js:not([data-mov=reduzido]) .casa.visto .anuncio{opacity:1;transform:none}
+.js:not([data-mov=reduzido]) .casa .anuncio figure{clip-path:inset(0 100% 0 0);transition:clip-path var(--t3) var(--curva);transition-delay:calc(260ms + var(--i)*90ms)}
+.js:not([data-mov=reduzido]) .casa.visto .anuncio figure{clip-path:inset(0)}
+.casa .anuncio .placa{transition:border-color var(--t2),padding var(--t2) var(--curva)}
+.casa .anuncio:hover .placa{padding-left:24px}
+@media (max-width:760px){
+  .casa-id{grid-template-columns:auto 1fr;gap:14px 16px}
+  .casa-logo{height:52px;max-width:120px}
+  .casa-nav{grid-column:1/-1}
+  .casa-nav .seta{margin-left:auto}
+  .casa .obra.anuncio{width:78vw}
+  .casa .placa{grid-template-columns:auto 1fr}.casa .placa b{grid-column:2;grid-row:3}
+}
+[data-mov=reduzido] .hero-logo{display:none}

@@ -7,7 +7,7 @@
   /* ── Movimento reduzido: sistema + interruptor do rodapé (soma, nunca contraria) ── */
   const mq = matchMedia('(prefers-reduced-motion: reduce)');
   const guardado = () => { try { return localStorage.getItem('qg-mov') === 'reduzido'; } catch { return false; } };
-  const reduzido = () => mq.matches || guardado();
+  const reduzido = () => guardado();   // só o interruptor do rodapé (decisão do João, 16/10/2026)
   const aplicaMov = () => {
     raiz.dataset.mov = reduzido() ? 'reduzido' : 'normal';
     $$('.mov').forEach((b) => { b.setAttribute('aria-pressed', String(reduzido())); });
@@ -85,7 +85,7 @@
     const heroEl = v.closest('.hero'); let tocou = false, desistiu = false;
     const vez = () => { tocou = tocou || v.currentTime > 0.05;
       const noLogo = v.currentTime < 4.3 || (v.duration && v.currentTime > v.duration - 0.6);
-      heroEl.classList.toggle('logo-a-frente', !guardado() && (tocou ? (!v.paused && noLogo) : !desistiu)); };   // com «Reduzir movimento» do sistema corre a versão calma (CSS); só o interruptor do rodapé a tira
+      heroEl.classList.toggle('logo-a-frente', !guardado() && (tocou ? (!v.paused && noLogo) : !desistiu)); };   // só o interruptor do rodapé a tira
     setTimeout(() => { desistiu = true; vez(); }, 3500); vez(); document.addEventListener('qg:mov', vez);
     v.addEventListener('timeupdate', vez); v.addEventListener('pause', vez); v.addEventListener('playing', vez);
     ['loadeddata', 'canplay', 'pause', 'stalled'].forEach((ev) => v.addEventListener(ev, () => { if (v.paused) setTimeout(toca, 150); }));
@@ -325,19 +325,20 @@
   $$('.ler').forEach((b) => b.addEventListener('click', () => { const r = document.getElementById(b.getAttribute('aria-controls')); const a = r.classList.toggle('aberto'); b.setAttribute('aria-expanded', String(a)); b.textContent = a ? 'Mostrar menos' : b.dataset.rotulo; }));
 
   /* ══════════ Peças da Octane, com os conteúdos da QUADIS Gallery ══════════ */
-  /* ── A sala: pista horizontal com setas, teclado e barra de progresso ── */
-  const sala = $('.sala');
-  if (sala) {
-    const pista = $('.sala-pista', sala), barra = $('.sala-barra', sala), ant = $('.sala-nav .ant', sala), seg = $('.sala-nav .seg', sala);
+  /* ── A sala, marca a marca: cada fila tem setas nos dois sentidos, teclado e barra de progresso.
+        A primeira vez que uma fila entra no ecrã, dá um pequeno passo para o lado e volta: diz «isto desliza». ── */
+  $$('[data-casa]').forEach((casa) => {
+    const pista = $('.casa-pista', casa), barra = $('.sala-barra', casa), ant = $('.ant', casa), seg = $('.seg', casa);
     const passo = () => { const o = $('.obra', pista); return o ? o.getBoundingClientRect().width + parseFloat(getComputedStyle(pista).columnGap || 24) : 400; };
     const vai = (d) => pista.scrollBy({ left: d * passo(), behavior: reduzido() ? 'auto' : 'smooth' });
-    const est = () => { const m = pista.scrollWidth - pista.clientWidth, p = m > 0 ? pista.scrollLeft / m : 0; barra.style.setProperty('--s', Math.max(0.08, p).toFixed(3)); ant.disabled = p < 0.01; seg.disabled = p > 0.99; };
+    const est = () => { const m = pista.scrollWidth - pista.clientWidth, p = m > 0 ? pista.scrollLeft / m : 1; barra.style.setProperty('--s', Math.max(0.08, p).toFixed(3)); ant.disabled = p < 0.01; seg.disabled = m <= 2 || p > 0.99; };
     ant.addEventListener('click', () => vai(-1)); seg.addEventListener('click', () => vai(1));
     pista.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); vai(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); vai(-1); } });
     pista.addEventListener('scroll', est, { passive: true }); addEventListener('resize', est); est();
-  }
+    new IntersectionObserver(([en], o) => { if (!en.isIntersecting) return; o.disconnect(); casa.classList.add('visto');
+      if (!reduzido() && pista.scrollWidth > pista.clientWidth + 40) setTimeout(() => { pista.scrollBy({ left: 70, behavior: 'smooth' }); setTimeout(() => pista.scrollBy({ left: -70, behavior: 'smooth' }), 650); }, 1100); }, { threshold: 0.25 }).observe(casa);
+  });
 
-  /* ── Ofícios: a fotografia de cada serviço segue o rato, com um ligeiro balanço na direcção do movimento ── */
   /* no toque: a marca mais perto do centro do ecrã fica activa e a fotografia dela desliza até à linha, com o mesmo balanço */
   if (!matchMedia('(hover: hover)').matches) $$('[data-oficios]').forEach((lista) => {
     const im = $('.oficios-img', lista), linhas2 = $$('.oficio', lista); let y = 0, ay = 0, vx = 0, raf = 0, ia = false;
