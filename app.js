@@ -199,7 +199,7 @@
 
   /* ── No toque, as imagens vivas mexem-se com a posição no ecrã (vertical) e na pista da sala (horizontal) ── */
   if (!matchMedia('(hover: hover)').matches) {
-    const vivos = $$('.obra, .cartao'); let pedido = false;
+    const vivos = $$('.cartao');   // os anúncios da sala ficam quietos ao scroll; só os cartões da colecção respiram na vertical let pedido = false;
     const mede = () => { pedido = false; if (reduzido()) return; vivos.forEach((el) => { const r = el.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50 || r.right < -50 || r.left > innerWidth + 50) return;
       el.style.setProperty('--my', Math.max(-1, Math.min(1, (r.top + r.height / 2 - innerHeight / 2) / (innerHeight / 2))).toFixed(3));
       el.style.setProperty('--mx', Math.max(-1, Math.min(1, (r.left + r.width / 2 - innerWidth / 2) / (innerWidth / 2))).toFixed(3)); }); };
@@ -326,7 +326,7 @@
 
   /* ══════════ Peças da Octane, com os conteúdos da QUADIS Gallery ══════════ */
   /* ── A sala, marca a marca: cada fila tem setas nos dois sentidos, teclado e barra de progresso.
-        A primeira vez que uma fila entra no ecrã, dá um pequeno passo para o lado e volta: diz «isto desliza». ── */
+        Os anúncios só andam quando a pessoa os arrasta ou carrega nas setas (o João não quer filas a mexer sozinhas). ── */
   $$('[data-casa]').forEach((casa) => {
     const pista = $('.casa-pista', casa), barra = $('.sala-barra', casa), ant = $('.ant', casa), seg = $('.seg', casa);
     const passo = () => { const o = $('.obra', pista); return o ? o.getBoundingClientRect().width + parseFloat(getComputedStyle(pista).columnGap || 24) : 400; };
@@ -335,8 +335,7 @@
     ant.addEventListener('click', () => vai(-1)); seg.addEventListener('click', () => vai(1));
     pista.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); vai(1); } if (e.key === 'ArrowLeft') { e.preventDefault(); vai(-1); } });
     pista.addEventListener('scroll', est, { passive: true }); addEventListener('resize', est); est();
-    new IntersectionObserver(([en], o) => { if (!en.isIntersecting) return; o.disconnect(); casa.classList.add('visto');
-      if (!reduzido() && pista.scrollWidth > pista.clientWidth + 40) setTimeout(() => { pista.scrollBy({ left: 70, behavior: 'smooth' }); setTimeout(() => pista.scrollBy({ left: -70, behavior: 'smooth' }), 650); }, 1100); }, { threshold: 0.25 }).observe(casa);
+    new IntersectionObserver(([en], o) => { if (!en.isIntersecting) return; o.disconnect(); casa.classList.add('visto'); }, { threshold: 0.25 }).observe(casa);
   });
 
   /* no toque: a marca mais perto do centro do ecrã fica activa e a fotografia dela desliza até à linha, com o mesmo balanço */

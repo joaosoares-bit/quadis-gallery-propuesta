@@ -863,7 +863,6 @@ dialog.luz::backdrop{background:#000}
   .oficios-lista[data-activo] .oficio{opacity:.34}
   .oficios-lista[data-activo="0"] .oficio[data-k="0"],.oficios-lista[data-activo="1"] .oficio[data-k="1"],.oficios-lista[data-activo="2"] .oficio[data-k="2"],.oficios-lista[data-activo="3"] .oficio[data-k="3"],.oficios-lista[data-activo="4"] .oficio[data-k="4"]{opacity:1;padding-left:12px;color:var(--acento-2)}
   .oficio{padding-right:42vw}
-  .obra img{transform:scale(1.08) translate3d(calc(var(--mx,0)*-16px),calc(var(--my,0)*-12px),0)}
   .cartao img{transform:scale(1.05) translate3d(0,calc(var(--my,0)*-10px),0)}
   .reel.a-tocar{transform:translateY(-8px)}
 }
@@ -904,7 +903,8 @@ dialog.luz::backdrop{background:#000}
 /* entrada da marca */
 .js:not([data-mov=reduzido]) .casa .casa-logo{opacity:0;transform:scale(.7) rotate(-6deg);filter:blur(6px);transition:opacity var(--t3) var(--curva),transform var(--t3) var(--curva),filter var(--t3) var(--curva)}
 .js:not([data-mov=reduzido]) .casa.visto .casa-logo{opacity:1;transform:none;filter:none}
-.js:not([data-mov=reduzido]) .casa .anuncio{opacity:0;transform:translateX(90px);transition:opacity var(--t3) var(--curva),transform var(--t3) var(--curva);transition-delay:calc(200ms + var(--i)*90ms)}
+/* os anúncios sobem (eixo y): a deslizar no eixo x, o encaixe da fila perseguia-os e a fila andava de lado sozinha */
+.js:not([data-mov=reduzido]) .casa .anuncio{opacity:0;transform:translateY(48px);transition:opacity var(--t3) var(--curva),transform var(--t3) var(--curva);transition-delay:calc(200ms + var(--i)*90ms)}
 .js:not([data-mov=reduzido]) .casa.visto .anuncio{opacity:1;transform:none}
 .js:not([data-mov=reduzido]) .casa .anuncio figure{clip-path:inset(0 100% 0 0);transition:clip-path var(--t3) var(--curva);transition-delay:calc(260ms + var(--i)*90ms)}
 .js:not([data-mov=reduzido]) .casa.visto .anuncio figure{clip-path:inset(0)}
