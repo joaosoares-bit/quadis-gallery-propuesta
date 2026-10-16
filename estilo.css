@@ -1041,3 +1041,13 @@ dialog.luz::backdrop{background:#000}
 .taller2-txt .accoes{margin-top:28px}
 @media (max-width:900px){.taller2-grelha{grid-template-columns:1fr}}
 @media (max-width:760px){.visor{overflow:visible;margin-bottom:70px}.visor .cena{border-radius:var(--r);overflow:hidden}.visor::after{border-radius:var(--r)}.hud-base{left:0;right:0;bottom:-66px}.leitura{bottom:12px}.canto{width:26px;height:26px}.hud-topo{font-size:.58rem}.ponto-t b{font-size:.58rem;padding:4px 7px}.leitura{font-size:1.1rem}}
+/* ── Auditoria do telemóvel (16/10/2026): nada abaixo de 12 px de letra; a faixa da demo cabe inteira ── */
+.demo-curto{display:none}
+@media (max-width:760px){
+  .demo-longo{display:none}.demo-curto{display:inline}
+  .demo{text-align:center}
+  .sala-v span{font-size:.78rem}
+  .hud-topo,.ponto-t b{font-size:.72rem}
+  .leitura small,.casa .placa h4 small,.c2 small{font-size:.75rem}
+}
+.numeros dd small{font-size:max(12px,.36em)}
