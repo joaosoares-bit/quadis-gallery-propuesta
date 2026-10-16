@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# entorno de demostración: las páginas llevan noindex
